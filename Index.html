@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Piket HIMATIC</title>
+  <link rel="stylesheet" href="body.css">
+</head>
+<body>
+
+  <img src="assets/LOGO1.jpg" alt="Logo HIMATIC" class="logo">
+
+  <h1 class="rgb-glow">JADWAL PIKET HIMATIC</h1>
+  <h3 id="mingguLabel"></h3>
+
+  <table id="jadwalTable">
+    <tr>
+      <th>Hari</th>
+      <th>Anggota Piket</th>
+    </tr>
+  </table>
+
+  <div class="catatan">
+    <strong>Catatan:</strong> Jadwal ini berotasi otomatis setiap minggu. Setelah minggu keempat, rotasi kembali ke minggu pertama.
+  </div>
+
+  <div class="notif" id="notif">🫵 hoii piket njinggg 👌🫶!</div>
+
+  <script>
+    const anggota = [
+      "ALDI", "ALEX", "ALFI", "ARIEL", "DHANI", "EDO", "ERGI", "FARHAN",
+      "HANIF", "IDRIS", "ILYAS", "IRSYAD", "RAHMAN", "RIJAL", "SILA",
+      "TITO", "WAHYU", "ZAKIYA", "ZETIA"
+    ];
+
+    const hariPiket = ["Senin", "Selasa", "Rabu", "Kamis"];
+
+    let rotasi = [];
+    let index = 0;
+    for (let minggu = 1; minggu <= 4; minggu++) {
+      let mingguData = { minggu, data: [] };
+      for (let i = 0; i < hariPiket.length; i++) {
+        let jumlah = (i % 2 === 0) ? 4 : 3;
+        let piket = [];
+        for (let j = 0; j < jumlah; j++) {
+          piket.push(anggota[(index + j) % anggota.length]);
+        }
+        mingguData.data.push({ hari: hariPiket[i], anggota: piket });
+        index += jumlah;
+      }
+      rotasi.push(mingguData);
+    }
+
+    const today = new Date();
+    const mingguKe = Math.ceil(today.getDate() / 7);
+    const mingguAktif = rotasi[(mingguKe - 1) % 4];
+    document.getElementById("mingguLabel").innerText = `Minggu ke-${mingguAktif.minggu}`;
+
+    const table = document.getElementById("jadwalTable");
+    mingguAktif.data.forEach(row => {
+      let tr = document.createElement("tr");
+      tr.innerHTML = `<td>${row.hari}</td><td>${row.anggota.join(", ")}</td>`;
+      table.appendChild(tr);
+    });
+
+    window.onload = () => {
+      const notif = document.getElementById("notif");
+      setTimeout(() => notif.classList.add("show"), 1500);
+      setTimeout(() => notif.classList.remove("show"), 9000);
+    };
+  </script>
+
+</body>
+</html>
